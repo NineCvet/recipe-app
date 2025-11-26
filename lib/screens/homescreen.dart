@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   String _searchQuery = '';
   Category? _selectedCategory;
+  final TextEditingController _searchController = TextEditingController();  
 
   @override
   void initState() {
@@ -57,6 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
           return category.strCategory.toLowerCase().contains(query.toLowerCase());
         }).toList();
       }
+    });
+  }
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _searchQuery = '';
+      _filteredCategories = _categories;
     });
   }
 
@@ -137,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         );
+                        _clearSearch();
                       },
                     );
                   },
@@ -176,16 +185,26 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(
+              controller: _searchController,  
               decoration: InputDecoration(
                 hintText: 'Search categories...',
                 prefixIcon: const Icon(Icons.search),
+                suffixIcon: _searchQuery.isNotEmpty  
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: _clearSearch,
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 filled: true,
                 fillColor: Colors.grey[100],
               ),
-              onChanged: _filterCategories,
+              onChanged: (value) { 
+                _filterCategories(value);
+                setState(() {}); 
+              },
             ),
           ),
           Expanded(
@@ -220,6 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 );
+                                _clearSearch();
                               },
                             );
                           },

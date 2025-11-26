@@ -70,6 +70,14 @@ class _MealsScreenState extends State<MealsScreen> {
     });
   }
 
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _searchQuery = '';
+      _filteredMeals = _meals;
+    });
+  }
+
   Future<void> _searchMealsFromAPI(String query) async {
     if (query.isEmpty) {
       setState(() {
@@ -116,10 +124,7 @@ class _MealsScreenState extends State<MealsScreen> {
             IconButton(
               icon: const Icon(Icons.clear),
               tooltip: 'Clear Search',
-              onPressed: () {
-                _searchController.clear();
-                _filterMeals('');
-              },
+              onPressed: _clearSearch,
             ),
         ],
       ),
@@ -135,13 +140,10 @@ class _MealsScreenState extends State<MealsScreen> {
               decoration: InputDecoration(
                 hintText: 'Search dishes in ${widget.category}...',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
+                suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          _filterMeals('');
-                        },
+                        onPressed: _clearSearch,
                       )
                     : null,
                 border: OutlineInputBorder(
@@ -246,6 +248,7 @@ class _MealsScreenState extends State<MealsScreen> {
                                     ),
                                   ),
                                 );
+                                _clearSearch();
                               },
                             );
                           },
